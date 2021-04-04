@@ -53,7 +53,7 @@ class RBM:
         axes=[]
         fig=plt.figure()
         for k in range(nb_images):
-            prob = [1/2 for i in range(nb_pixels)]
+            v0 = [1/2 for i in range(nb_pixels)]
             x = np.random.binomial(n = 1, p = prob) #On initialise l'image aléatoirement
             for i in range (nb_iter):
                 p_h_v0 = self.entree_sortie(v_0)

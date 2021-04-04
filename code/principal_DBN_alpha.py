@@ -17,8 +17,43 @@ def class DNN:
         for i in range (self.nb_couches):
             print("#########################")
             print("RBM numéro " + i)
-            L[i].train(nb_iter, learning_rate, batch_size, x)
-            x = L[i].entree_sortie(x)
+            self.DNN_list.train(nb_iter, learning_rate, batch_size, x)
+            x = self.DNN_list.entree_sortie(x)
 
-    def generer_image_DBN():
-        return 0
+    def entree_sortie_DBN(self, v):
+        h = v
+        for k in range(self.nb_layers):
+            h = self.DNN_list[k].entree_sortie(h)
+        return(h)
+
+    def sortie_entree_DBN(self, h):
+        v = h
+        for k in range(self.nb_layers):
+            v = self.DNN_list[k].sortie_entree(v)
+        return(v)
+
+    def generer_image_DBN(self, n_iter, nb_images, nb_pixels, height = 20, width = 16):
+        rows = int(nb_images) +1
+        cols = int(nb_images) +1
+        images = []
+        axes=[]
+        fig=plt.figure()
+        for k in range(nb_images):
+            v0 = [1/2 for i in range(nb_pixels)]
+            x = np.random.binomial(n = 1, p = prob) #On initialise l'image aléatoirement
+            for i in range (nb_iter):
+                #Génération de l'image à partir de l'echantilloneur de Gibbs
+                p_h_v0 = self.entree_sortie_DBN(v_0)
+                h = np.random.binomial(n = 1, p = p_h_v0)
+                p_v1_h = self.sortie_entree_DBN(h)
+                x = np.random.binomial(n = 1, p = p_v1_h)
+            reconstruct_image = np.reshape(x, shape = (height, width))
+            images.append(images)
+            #Affichage des images
+            axes.append( fig.add_subplot(rows, cols, a+1) )
+            subplot_title=("Subplot"+str(a))
+            axes[-1].set_title(subplot_title)
+            plt.imshow(reconstruct_image)
+        fig.tight_layout()
+        plt.show()
+        return(images)

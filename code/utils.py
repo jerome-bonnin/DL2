@@ -24,17 +24,7 @@ def lire_alpha_digit(caracteres):
     return data
 
 def cross_entropy(y_hat, y):
-    '''
-    Attention, y est vecteur de taille n.
-    y_hat est une matrice de taille (n_données x nombre_classe).
-    '''
-    #Binaristion de y_hat
-    y_bin = np.zeros(shape = y.shape())
-    for i in range(len(y_hat)):
-        y_bin[i, y_hat[i]] = 1
-    #Calcul de la cross entropy
-    N = len(y) #Taille de la population
-    return(-np.sum(y_bin, y_hat)/N)
+    return - np.sum(y * np.log(y_hat + 1e-9)) / len(y)
 
 def training_images():
     with gzip.open('../data/train-images-idx3-ubyte.gz', 'r') as f:
@@ -50,7 +40,7 @@ def training_images():
         # pixel values are 0 to 255
         image_data = f.read()
         images = np.frombuffer(image_data, dtype=np.uint8)\
-            .reshape((image_count, row_count, column_count))
+            .reshape((image_count, row_count * column_count))
         return images
 
 def testing_images():
@@ -67,7 +57,7 @@ def testing_images():
         # pixel values are 0 to 255
         image_data = f.read()
         images = np.frombuffer(image_data, dtype=np.uint8)\
-            .reshape((image_count, row_count, column_count))
+            .reshape((image_count, row_count * column_count))
         return images
 
 def training_labels():
@@ -80,7 +70,11 @@ def training_labels():
         # label values are 0 to 9
         label_data = f.read()
         labels = np.frombuffer(label_data, dtype=np.uint8)
-        return labels
+        #Binaristion de labels
+        y_bin = np.zeros((len(labels),10))
+        for i in range(len(labels)):
+            y_bin[i, labels[i]] = 1
+        return y_bin
 
 def testing_labels():
     with gzip.open('../data/t10k-labels-idx1-ubyte.gz', 'r') as f:
@@ -92,4 +86,8 @@ def testing_labels():
         # label values are 0 to 9
         label_data = f.read()
         labels = np.frombuffer(label_data, dtype=np.uint8)
-        return labels
+        #Binaristion de labels
+        y_bin = np.zeros((len(labels),10))
+        for i in range(len(labels)):
+            y_bin[i, labels[i]] = 1
+        return y_bin

@@ -1,16 +1,9 @@
 import sys
-
 import numpy as np
-
-
-
-from utils import lire_alpha_digit
-from utils import training_images
-from utils import testing_images
-from utils import training_labels
-from utils import testing_labels
+from utils import lire_alpha_digit, training_images, testing_images, training_labels, testing_labels
 from principal_RBM_alpha import RBM
 from principal_DBN_alpha import DNN
+from principal_DNN_MNIST import retropropagation, test_DNN
 
 if __name__ == '__main__':
     args = sys.argv[1:]
@@ -46,6 +39,6 @@ if __name__ == '__main__':
         data_label = training_labels()
         data_test = testing_images()
         data_test_label = testing_labels()
-        dnn = DNN([data.shape[1]] + couches + [len(caracteres)])
-        dnn = retropropagation(network, num_iter, learning_rate, batch_size, data, data_label)
-        print(test_dnn, data_test, data_test_label)
+        dnn = DNN([data.shape[1]] + couches + [10])
+        dnn = retropropagation(dnn, n_epochs, learning_rate, batch_size, data, data_label)
+        print(test_DNN(dnn, data_test, data_test_label))

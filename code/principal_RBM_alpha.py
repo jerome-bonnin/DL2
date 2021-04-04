@@ -46,13 +46,27 @@ class RBM:
             print("EPOCH = {}".format(i))
             print("loss = {}".format(loss))
 
-    # def generer_image_RBM(self, n_iter, nb_images, nb_pixels):
-    #     images = []
-    #     for k in range(nb_images):
-    #         prob = [1/2 for i in range(nb_pixels)]
-    #         x = np.random.binomial(n = 1, p = prob) #On initialise l'image aléatoirement
-    #         for i in range (nb_iter):
-    #             p_h_v0 = self.entree_sortie(v_0)
-    #             h = np.random.binomial(n = 1, p = p_h_v0)
-    #             p_v1_h = self.sortie_entree(h)
-    #             x = np.random.binomial(n = 1, p = p_v1_h)
+    def generer_image_RBM(self, n_iter, nb_images, nb_pixels, height = 20, width = 16):
+        rows = int(nb_images) +1
+        cols = int(nb_images) +1
+        images = []
+        axes=[]
+        fig=plt.figure()
+        for k in range(nb_images):
+            prob = [1/2 for i in range(nb_pixels)]
+            x = np.random.binomial(n = 1, p = prob) #On initialise l'image aléatoirement
+            for i in range (nb_iter):
+                p_h_v0 = self.entree_sortie(v_0)
+                h = np.random.binomial(n = 1, p = p_h_v0)
+                p_v1_h = self.sortie_entree(h)
+                x = np.random.binomial(n = 1, p = p_v1_h)
+            reconstruct_image = np.reshape(x, shape = (height, width))
+            images.append(images)
+            axes.append( fig.add_subplot(rows, cols, a+1) )
+            subplot_title=("Subplot"+str(a))
+            axes[-1].set_title(subplot_title)
+            plt.imshow(reconstruct_image)
+        fig.tight_layout()
+        plt.show()
+        return(images)
+

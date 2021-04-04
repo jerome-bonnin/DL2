@@ -1,59 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
 from principal_RBM_alpha import RBM
 
-def class DNN:
-    def __init__(nb_couches, p, q):
-        self.DNN_list = []
-        self.nb_couches = nb_couches
-        DNN_list.append(RBM(p, q))
-        for i in range(nb_couches):
-            DNN_list.append(RBM(q, q))
-            '''
-            La premiere couche a la même forme que le RBM classique.
-            Les autres couches seront des couches carrées par souci de compatibilité et de simplicité.
-            p (resp. q) représente la taille des données d'entrée (resp. la taille de la sortie)
-            '''
+class DNN:
+    def __init__(self, couches):
+        self.RBM_list = []
+        self.nb_couches = len(couches) - 1
+        for i in range(self.nb_couches):
+            self.RBM_list.append(RBM(couches[i], couches[i+1]))
 
-    def pretrain_DNN(self, nb_iter, learning_rate, batch_size, x):
-        for i in range (self.nb_couches):
+    def pretrain_DNN(self, x, nb_iter, learning_rate, batch_size):
+        for i, rbm in enumerate(self.RBM_list):
             print("#########################")
-            print("RBM numéro " + i)
-            self.DNN_list.train(nb_iter, learning_rate, batch_size, x)
-            x = self.DNN_list.entree_sortie(x)
+            print("RBM numero {}".format(i))
+            rbm.train_RBM(x, nb_iter, learning_rate, batch_size)
+            x = rbm.entree_sortie(x)
 
     def entree_sortie_DBN(self, v):
         h = v
-        for k in range(self.nb_layers):
-            h = self.DNN_list[k].entree_sortie(h)
+        for k in range(self.nb_couches):
+            h = self.RBM_list[k].entree_sortie(h)
         return(h)
 
     def sortie_entree_DBN(self, h):
         v = h
-        for k in range(self.nb_layers):
-            v = self.DNN_list[k].sortie_entree(v)
+        for k in range(self.nb_couches):
+            v = self.RBM_list[-k-1].sortie_entree(v)
         return(v)
 
-    def generer_image_DBN(self, n_iter, nb_images, nb_pixels, height = 20, width = 16):
-        rows = int(nb_images) +1
-        cols = int(nb_images) +1
+    def generer_image_DBN(self, n_iter, n_images, height=20, width=16):
+        n_rows = np.ceil(np.sqrt(n_images))
+        n_cols = np.ceil(np.sqrt(n_images))
         images = []
-        axes=[]
-        fig=plt.figure()
-        for k in range(nb_images):
-            v0 = [1/2 for i in range(nb_pixels)]
-            x = np.random.binomial(n = 1, p = prob) #On initialise l'image aléatoirement
-            for i in range (nb_iter):
-                #Génération de l'image à partir de l'echantilloneur de Gibbs
-                p_h_v0 = self.entree_sortie_DBN(v_0)
-                h = np.random.binomial(n = 1, p = p_h_v0)
-                p_v1_h = self.sortie_entree_DBN(h)
-                x = np.random.binomial(n = 1, p = p_v1_h)
-            reconstruct_image = np.reshape(x, shape = (height, width))
-            images.append(images)
-            #Affichage des images
-            axes.append( fig.add_subplot(rows, cols, a+1) )
-            subplot_title=("Subplot"+str(a))
-            axes[-1].set_title(subplot_title)
-            plt.imshow(reconstruct_image)
+        axes = []
+        fig = plt.figure()
+        for k in range(n_images):
+            p_v0 = np.ones((1,height*width)) / 2
+            x = np.random.binomial(n=1, p=p_v0) # On initialise l'image aléatoirement
+            for _ in range (n_iter):
+                p_h_v0 = self.entree_sortie_DBN(x)
+                h = np.random.binomial(n=1, p=p_h_v0)
+                p_v_h = self.sortie_entree_DBN(h)
+                x = np.random.binomial(n=1, p=p_v_h)
+            reconstructed_image = x.reshape((height, width))
+            images.append(reconstructed_image)
+            axes.append(fig.add_subplot(n_rows, n_cols, k+1))
+            axes[-1].set_title("Subplot {}".format(k))
+            axes[-1].imshow(reconstructed_image, cmap='gray')
         fig.tight_layout()
         plt.show()
         return(images)

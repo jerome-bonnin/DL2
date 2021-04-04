@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from utils import sigmoid
 
 class RBM:
@@ -30,8 +31,8 @@ class RBM:
                 v0 = x
                 p_h_v0 = self.entree_sortie(v0)
                 h0 = np.random.binomial(n=1, p=p_h_v0)
-                p_v1_h0 = self.sortie_entree(h0)
-                v1 = np.random.binomial(n=1, p=p_v1_h0)
+                p_v_h0 = self.sortie_entree(h0)
+                v1 = np.random.binomial(n=1, p=p_v_h0)
                 x_prime = v1
                 p_h_v1 = self.entree_sortie(v1)
                 grad_W = (np.dot(v0.T, p_h_v0) - np.dot(v1.T, p_h_v1)) / len(x)
@@ -40,32 +41,31 @@ class RBM:
                 self.a += eps * grad_a
                 grad_b = np.mean(p_h_v0 - p_h_v1, axis=0, keepdims=True)
                 self.b += eps * grad_b
-                loss += np.sum((x_prime - x)^2)
+                loss += np.sum((x_prime - x) ** 2)
             loss /= len(data)
             print("----------------------------------------")
             print("EPOCH = {}".format(i))
             print("loss = {}".format(loss))
 
-    def generer_image_RBM(self, n_iter, nb_images, nb_pixels, height = 20, width = 16):
-        rows = int(nb_images) +1
-        cols = int(nb_images) +1
+    def generer_image_RBM(self, n_iter, n_images, height=20, width=16):
+        n_rows = np.ceil(np.sqrt(n_images))
+        n_cols = np.ceil(np.sqrt(n_images))
         images = []
-        axes=[]
-        fig=plt.figure()
-        for k in range(nb_images):
-            v0 = [1/2 for i in range(nb_pixels)]
-            x = np.random.binomial(n = 1, p = prob) #On initialise l'image aléatoirement
-            for i in range (nb_iter):
-                p_h_v0 = self.entree_sortie(v_0)
-                h = np.random.binomial(n = 1, p = p_h_v0)
-                p_v1_h = self.sortie_entree(h)
-                x = np.random.binomial(n = 1, p = p_v1_h)
-            reconstruct_image = np.reshape(x, shape = (height, width))
-            images.append(images)
-            axes.append( fig.add_subplot(rows, cols, a+1) )
-            subplot_title=("Subplot"+str(a))
-            axes[-1].set_title(subplot_title)
-            plt.imshow(reconstruct_image)
+        axes = []
+        fig = plt.figure()
+        for k in range(n_images):
+            p_v0 = np.ones((1,height*width)) / 2
+            x = np.random.binomial(n=1, p=p_v0) # On initialise l'image aléatoirement
+            for _ in range (n_iter):
+                p_h_v0 = self.entree_sortie(x)
+                h = np.random.binomial(n=1, p=p_h_v0)
+                p_v_h = self.sortie_entree(h)
+                x = np.random.binomial(n=1, p=p_v_h)
+            reconstructed_image = x.reshape((height, width))
+            images.append(reconstructed_image)
+            axes.append(fig.add_subplot(n_rows, n_cols, k+1))
+            axes[-1].set_title("Subplot {}".format(k))
+            axes[-1].imshow(reconstructed_image, cmap='gray')
         fig.tight_layout()
         plt.show()
         return(images)

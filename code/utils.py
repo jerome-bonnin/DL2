@@ -21,3 +21,16 @@ def lire_alpha_digit(caracteres):
     # matrice des donnees (n_samples,n_pixels)
     data = np.array(data)
     return data
+
+def cross_entropy(y_hat, y):
+    '''
+    Attention, y est vecteur de taille n.
+    y_hat est une matrice de taille (n_données x nombre_classe).
+    '''
+    #Binaristion de y_hat
+    y_bin = np.zeros(shape = y.shape())
+    for i in range(len(y_hat)):
+        y_bin[i, y_hat[i]] = 1
+    #Calcul de la cross entropy
+    N = len(y) #Taille de la population
+    return(-np.sum(y_bin, y_hat)/N)

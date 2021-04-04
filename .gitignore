@@ -1,7 +1,4 @@
 code/__pycache__/
 data/
-Cours_1.pdf
-Cours_2.pdf
-Cours_3.pdf
-generative_models_dl2.pdf
-TP_DNN.pdf
+output/
+*.pdf

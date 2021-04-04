@@ -1,6 +1,14 @@
 import sys
 
+import numpy as np
+
+
+
 from utils import lire_alpha_digit
+from utils import training_images
+from utils import testing_images
+from utils import training_labels
+from utils import testing_labels
 from principal_RBM_alpha import RBM
 from principal_DBN_alpha import DNN
 
@@ -27,3 +35,17 @@ if __name__ == '__main__':
         dbn = DNN([data.shape[1]] + couches + [len(caracteres)])
         dbn.pretrain_DNN(data, n_epochs, learning_rate, batch_size)
         dbn.generer_image_DBN(n_iter=10, n_images=16)
+
+
+    if args[0] == 'dnn_MNIST':
+        n_epochs = int(args[1])
+        learning_rate = float(args[2])
+        batch_size = int(args[3])
+        couches = [int(s) for s in args[4].rsplit('-')]
+        data = training_images()
+        data_label = training_labels()
+        data_test = testing_images()
+        data_test_label = testing_labels()
+        dnn = DNN([data.shape[1]] + couches + [len(caracteres)])
+        dnn = retropropagation(network, num_iter, learning_rate, batch_size, data, data_label)
+        print(test_dnn, data_test, data_test_label)

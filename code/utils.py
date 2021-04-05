@@ -74,7 +74,7 @@ def training_labels():
         y_bin = np.zeros((len(labels),10))
         for i in range(len(labels)):
             y_bin[i, labels[i]] = 1
-        return y_bin
+        return labels, y_bin
 
 def testing_labels():
     with gzip.open('../data/t10k-labels-idx1-ubyte.gz', 'r') as f:
@@ -90,4 +90,4 @@ def testing_labels():
         y_bin = np.zeros((len(labels),10))
         for i in range(len(labels)):
             y_bin[i, labels[i]] = 1
-        return y_bin
+        return labels, y_bin

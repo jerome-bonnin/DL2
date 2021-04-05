@@ -59,8 +59,11 @@ def retropropagation(network, num_iter, learning_rate, batch_size, data, data_la
         print("Error = {}".format(loss))
     return network
 
-def test_DNN(network, data_test, data_label):
+def test_DNN(network, data_test, data_label_bin, data_label):
     sortie = entree_sortie_reseau(network, data_test)
     y_hat = sortie[-1] #ici, y_hat est une matrice de proba pour chaque "individus"
-    error = cross_entropy(y_hat, data_label)
-    return error
+    error = cross_entropy(y_hat, data_label_bin)
+    classif = np.argmax(y_hat, axis=1)
+    erreur_class = (classif - data_label !=0)
+    sum_error_class = sum(erreur_class)
+    return sum_error_class/len(y_hat)

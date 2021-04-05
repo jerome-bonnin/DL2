@@ -36,9 +36,9 @@ if __name__ == '__main__':
         batch_size = int(args[3])
         couches = [int(s) for s in args[4].rsplit('-')]
         data = training_images()
-        data_label = training_labels()
+        data_label, data_label_bin = training_labels()
         data_test = testing_images()
-        data_test_label = testing_labels()
+        data_test_label, data_test_label_bin= testing_labels()
         dnn = DNN([data.shape[1]] + couches + [10])
-        dnn = retropropagation(dnn, n_epochs, learning_rate, batch_size, data, data_label)
-        print(test_DNN(dnn, data_test, data_test_label))
+        dnn = retropropagation(dnn, n_epochs, learning_rate, batch_size, data, data_label_bin)
+        print(test_DNN(dnn, data_test, data_test_label_bin, data_test_label))

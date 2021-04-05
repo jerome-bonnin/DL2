@@ -4,16 +4,17 @@ from principal_DBN_alpha import DNN
 from utils import cross_entropy
 
 def calcul_softmax(x):
-    return np.exp(x) / np.sum(np.exp(x))
+    return np.exp(x) / np.sum(np.exp(x), axis = 1, keepdims = True)
 
 def entree_sortie_reseau(network, x):
     list_RBM = network.RBM_list
-    list_res = []
-    for rbm in list_RBM:
+    list_res = [x]
+    for rbm in list_RBM[:-1]:
         x = rbm.entree_sortie(x)
         list_res.append(x)
+    x = np.dot(x, list_RBM[-1].W) + list_RBM[-1].b
     z = calcul_softmax(x)
-    list_res[-1] = z
+    list_res.append(z)
     return list_res
 
 def retropropagation(network, num_iter, learning_rate, batch_size, data, data_label): #Attention aux dimensions
@@ -26,6 +27,8 @@ def retropropagation(network, num_iter, learning_rate, batch_size, data, data_la
     if (len(data) % batch_size != 0):
         batch_list.append((data[n_batch*batch_size:], data_label[n_batch*batch_size:]))
     for i in range(num_iter):
+        print("----------------------------------------")
+        print("EPOCH = {}".format(i))
         loss = 0
         for data, label in batch_list:
             list_RBM = network.RBM_list
@@ -38,25 +41,23 @@ def retropropagation(network, num_iter, learning_rate, batch_size, data, data_la
             grad_W = np.dot(x_moins.T, c) / len(x)
             grad_b = np.mean(c, axis=0, keepdims=True)
             c_plus = c #Représente c^(p+1)
-            list_RBM[-1].W += eps*grad_W #Modification des poids du réseau
-            list_RBM[-1].b += eps*grad_b #Modification des biais du réseau
+            list_RBM[-1].W -= eps*grad_W #Modification des poids du réseau
+            list_RBM[-1].b -= eps*grad_b #Modification des biais du réseau
             #Cas général
-            for k in range(len(list_x) - 2, 0, -1):
-                x = list_x[k]
-                x_moins = list_x[k-1]
+            for k in range(len(list_RBM) - 2, -1, -1):
+                x = list_x[k+1]
+                x_moins = list_x[k]
                 c = np.dot(c_plus, list_RBM[k+1].W.T) * x * (1 - x)
                 c_plus = c
                 grad_W = np.dot(x_moins.T, c) / len(x)
                 grad_b = np.mean(c, axis=0, keepdims=True)
-                list_RBM[k].W += eps*grad_W #Modification des poids du réseau
-                list_RBM[k].b += eps*grad_b #Modification des biais du réseau
-            network.list_RBM = list_RBM #Modification de l'objet réseau
+                (list_RBM[k]).W -= eps*grad_W #Modification des poids du réseau
+                (list_RBM[k]).b -= eps*grad_b #Modification des biais du réseau
+            network.RBM_list = list_RBM #Modification de l'objet réseau
             y_hat = entree_sortie_reseau(network, data)[-1]
             loss += cross_entropy(y_hat, label)
         loss /= len(data)
-        print("----------------------------------------")
-        print("EPOCH = {}".format(i))
-        print("Error = {}".format(loss))
+        print("Loss = {}".format(loss))
     return network
 
 def test_DNN(network, data_test, data_label_bin, data_label):

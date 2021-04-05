@@ -24,7 +24,7 @@ def lire_alpha_digit(caracteres):
     return data
 
 def cross_entropy(y_hat, y):
-    return - np.sum(y * np.log(y_hat + 1e-9)) / len(y)
+    return - np.sum(y * np.log(y_hat + 1e-10)) / len(y)
 
 def training_images():
     with gzip.open('../data/train-images-idx3-ubyte.gz', 'r') as f:

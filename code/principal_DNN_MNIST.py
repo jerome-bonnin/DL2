@@ -65,6 +65,6 @@ def test_DNN(network, data_test, data_label_bin, data_label):
     y_hat = sortie[-1] #ici, y_hat est une matrice de proba pour chaque "individus"
     error = cross_entropy(y_hat, data_label_bin)
     classif = np.argmax(y_hat, axis=1)
-    erreur_class = (classif - data_label !=0)
+    erreur_class = (classif == data_label).astype(int)
     sum_error_class = sum(erreur_class)
     return sum_error_class/len(y_hat)

@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 from utils import lire_alpha_digit, training_images, testing_images, training_labels, testing_labels, binariser
 from principal_RBM_alpha import RBM
 from principal_DBN_alpha import DNN
@@ -44,3 +45,102 @@ if __name__ == '__main__':
         dnn = DNN([data.shape[1]] + couches + [10])
         dnn = retropropagation(dnn, n_epochs, learning_rate, batch_size, data, data_label_bin)
         print(test_DNN(dnn, data_test, data_test_label_bin, data_test_label))
+
+    if args[0] == 'analyse':
+        data = training_images()
+        data_label, data_label_bin = training_labels()
+        data_test = testing_images()
+        data_test_label, data_test_label_bin= testing_labels()
+        data = binariser(data)
+        data_test = binariser(data_test)
+
+        #Images avec n_donnees test
+        n_donnees_list = [1000, 3000, 7000, 10000, 30000, 60000]
+        train_err = []
+        pretrain_err = []
+        for n_donnees in n_donnees_list:
+            print('#################################################')
+            print("Nombre données train = {}".format(n_donnees))
+            sig = np.random.permutation(len(data))
+            data = data[sig]
+            data_label = data_label[sig]
+            data_label_bin = data_label_bin[sig]
+            data_trunc = data[:n_donnees]
+            data_label_trunc = data_label[:n_donnees]
+            data_label_bin_trunc = data_label_bin[:n_donnees]
+            couches = [50, 50]
+            network_pretrain = DNN([data.shape[1]] + couches + [10])
+            network_train = DNN([data.shape[1]] + couches + [10])
+            network_pretrain.pretrain_DNN(data, 20, 0.1, 64)
+            network_train = retropropagation(network_train, 10, 0.1, 64, data_trunc, data_label_bin_trunc)
+            network_pretrain = retropropagation(network_pretrain, 20, 0.1, 64, data_trunc, data_label_bin_trunc)
+            train_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
+            pretrain_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
+        plt.plot(n_donnees, train_err, label = 'Train')
+        plt.plot(n_donnees, pretrain_err, label = 'Pretrain')
+        plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

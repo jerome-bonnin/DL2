@@ -46,13 +46,14 @@ if __name__ == '__main__':
         dnn = retropropagation(dnn, n_epochs, learning_rate, batch_size, data, data_label_bin)
         print(test_DNN(dnn, data_test, data_test_label_bin, data_test_label))
 
-    if args[0] == 'analyse':
+    if args[0] == 'fig3':
         data = training_images()
         data_label, data_label_bin = training_labels()
         data_test = testing_images()
         data_test_label, data_test_label_bin= testing_labels()
         data = binariser(data)
         data_test = binariser(data_test)
+        n_donnees_list = [1000, 3000, 7000, 10000, 30000, 60000]
 
         #Images avec n_donnees test
         n_donnees_list = [1000, 3000, 7000, 10000, 30000, 60000]
@@ -71,16 +72,41 @@ if __name__ == '__main__':
             couches = [50, 50]
             network_pretrain = DNN([data.shape[1]] + couches + [10])
             network_train = DNN([data.shape[1]] + couches + [10])
-            network_pretrain.pretrain_DNN(data, 20, 0.1, 64)
-            network_train = retropropagation(network_train, 10, 0.1, 64, data_trunc, data_label_bin_trunc)
+            network_pretrain.pretrain_DNN(data, 10, 0.1, 64)
+            network_train = retropropagation(network_train, 20, 0.1, 64, data_trunc, data_label_bin_trunc)
             network_pretrain = retropropagation(network_pretrain, 20, 0.1, 64, data_trunc, data_label_bin_trunc)
             train_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
-            pretrain_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
-        plt.plot(n_donnees, train_err, label = 'Train')
-        plt.plot(n_donnees, pretrain_err, label = 'Pretrain')
+            pretrain_err.append(test_DNN(network_pretrain, data_test, data_test_label_bin, data_test_label))
+        plt.plot(n_donnees_list, train_err, label = 'Train')
+        plt.plot(n_donnees_list, pretrain_err, label = 'Pretrain')
+        plt.legend()
         plt.show()
 
-
+    if args[0] == 'fig1':
+        data = training_images()
+        data_label, data_label_bin = training_labels()
+        data_test = testing_images()
+        data_test_label, data_test_label_bin= testing_labels()
+        data = binariser(data)
+        data_test = binariser(data_test)
+        n_couches_list = [1, 3, 5, 7]
+        train_err = []
+        pretrain_err = []
+        for n_couches in n_couches_list:
+            print('#################################################')
+            print("Nombre couches = {}".format(n_couches))
+            couches = [50 for i in range(n_couches)]
+            network_pretrain = DNN([data.shape[1]] + couches + [10])
+            network_train = DNN([data.shape[1]] + couches + [10])
+            network_pretrain.pretrain_DNN(data, 10, 0.1, 64)
+            network_train = retropropagation(network_train, 20, 0.1, 64, data, data_label_bin)
+            network_pretrain = retropropagation(network_pretrain, 20, 0.1, 64, data, data_label_bin)
+            train_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
+            pretrain_err.append(test_DNN(network_pretrain, data_test, data_test_label_bin, data_test_label))
+        plt.plot(n_couches_list, train_err, label = 'Train')
+        plt.plot(n_couches_list, pretrain_err, label = 'Pretrain')
+        plt.legend()
+        plt.show()
 
 
 

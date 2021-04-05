@@ -91,3 +91,6 @@ def testing_labels():
         for i in range(len(labels)):
             y_bin[i, labels[i]] = 1
         return labels, y_bin
+
+def binariser(img, seuil=127):
+    return((img > seuil).astype(int))

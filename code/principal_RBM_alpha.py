@@ -30,9 +30,9 @@ class RBM:
             for x in batch_list:
                 v0 = x
                 p_h_v0 = self.entree_sortie(v0)
-                h0 = np.random.binomial(n=1, p=1-p_h_v0)
+                h0 = np.random.binomial(n=1, p=p_h_v0)
                 p_v_h0 = self.sortie_entree(h0)
-                v1 = np.random.binomial(n=1, p=1-p_v_h0)
+                v1 = np.random.binomial(n=1, p=p_v_h0)
                 x_prime = v1
                 p_h_v1 = self.entree_sortie(v1)
                 grad_W = (np.dot(v0.T, p_h_v0) - np.dot(v1.T, p_h_v1)) / len(x)
@@ -55,12 +55,12 @@ class RBM:
         fig = plt.figure()
         for k in range(n_images):
             p_v0 = np.ones((1,height*width)) / 2
-            x = np.random.binomial(n=1, p=1-p_v0) # On initialise l'image aléatoirement
+            x = np.random.binomial(n=1, p=p_v0) # On initialise l'image aléatoirement
             for _ in range (n_iter):
                 p_h_v0 = self.entree_sortie(x)
-                h = np.random.binomial(n=1, p=1-p_h_v0)
+                h = np.random.binomial(n=1, p=p_h_v0)
                 p_v_h = self.sortie_entree(h)
-                x = np.random.binomial(n=1, p=1-p_v_h)
+                x = np.random.binomial(n=1, p=p_v_h)
             reconstructed_image = x.reshape((height, width))
             images.append(reconstructed_image)
             axes.append(fig.add_subplot(n_rows, n_cols, k+1))

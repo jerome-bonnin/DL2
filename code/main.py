@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from utils import lire_alpha_digit, training_images, testing_images, training_labels, testing_labels
+from utils import lire_alpha_digit, training_images, testing_images, training_labels, testing_labels, binariser
 from principal_RBM_alpha import RBM
 from principal_DBN_alpha import DNN
 from principal_DNN_MNIST import retropropagation, test_DNN
@@ -39,6 +39,8 @@ if __name__ == '__main__':
         data_label, data_label_bin = training_labels()
         data_test = testing_images()
         data_test_label, data_test_label_bin= testing_labels()
+        data = binariser(data)
+        data_test = binariser(data_test)
         dnn = DNN([data.shape[1]] + couches + [10])
         dnn = retropropagation(dnn, n_epochs, learning_rate, batch_size, data, data_label_bin)
         print(test_DNN(dnn, data_test, data_test_label_bin, data_test_label))

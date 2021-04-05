@@ -36,7 +36,7 @@ class DNN:
         fig = plt.figure()
         for k in range(n_images):
             p_v0 = np.ones((1,height*width)) / 2
-            x = np.random.binomial(n=1, p=p_v0) # On initialise l'image aléatoirement
+            x = np.random.binomial(n=1, p=1-p_v0) # On initialise l'image aléatoirement
             for _ in range (n_iter):
                 p_h_v0 = self.entree_sortie_DBN(x)
                 h = np.random.binomial(n=1, p=p_h_v0)

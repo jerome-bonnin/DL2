@@ -44,12 +44,12 @@ def retropropagation(network, num_iter, learning_rate, batch_size, data, data_la
             for k in range(len(list_x) - 2, 0, -1):
                 x = list_x[k]
                 x_moins = list_x[k-1]
-                c = np.dot(c_plus, list_RBM[k+1]) * x * (1 - x)
+                c = np.dot(c_plus, list_RBM[k+1].W.T) * x * (1 - x)
                 c_plus = c
                 grad_W = np.dot(x_moins.T, c) / len(x)
                 grad_b = np.mean(c, axis=0, keepdims=True)
-                list_RBM[k-1].W += eps*grad_W #Modification des poids du réseau
-                list_RBM[k-1].b += eps*grad_b #Modification des biais du réseau
+                list_RBM[k].W += eps*grad_W #Modification des poids du réseau
+                list_RBM[k].b += eps*grad_b #Modification des biais du réseau
             network.list_RBM = list_RBM #Modification de l'objet réseau
             y_hat = entree_sortie_reseau(network, data)[-1]
             loss += cross_entropy(y_hat, label)

@@ -108,6 +108,32 @@ if __name__ == '__main__':
         plt.legend()
         plt.show()
 
+    if args[0] == 'fig2':
+        data = training_images()
+        data_label, data_label_bin = training_labels()
+        data_test = testing_images()
+        data_test_label, data_test_label_bin= testing_labels()
+        data = binariser(data)
+        data_test = binariser(data_test)
+        taille_couches_list = [50, 100, 200, 300, 500, 700]
+        train_err = []
+        pretrain_err = []
+        for taille_couches in taille_couches_list:
+            print('#################################################')
+            print("Taille couches = {}".format(taille_couches))
+            couches = [taille_couches, taille_couches]
+            network_pretrain = DNN([data.shape[1]] + couches + [10])
+            network_train = DNN([data.shape[1]] + couches + [10])
+            network_pretrain.pretrain_DNN(data, 10, 0.1, 64)
+            network_train = retropropagation(network_train, 20, 0.1, 64, data, data_label_bin)
+            network_pretrain = retropropagation(network_pretrain, 20, 0.1, 64, data, data_label_bin)
+            train_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
+            pretrain_err.append(test_DNN(network_pretrain, data_test, data_test_label_bin, data_test_label))
+        plt.plot(taille_couches_list, train_err, label = 'Train')
+        plt.plot(taille_couches_list, pretrain_err, label = 'Pretrain')
+        plt.legend()
+        plt.show()
+
 
 
 

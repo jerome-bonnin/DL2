@@ -69,12 +69,12 @@ if __name__ == '__main__':
             data_trunc = data[:n_donnees]
             data_label_trunc = data_label[:n_donnees]
             data_label_bin_trunc = data_label_bin[:n_donnees]
-            couches = [50, 50]
+            couches = [200, 200]
             network_pretrain = DNN([data.shape[1]] + couches + [10])
             network_train = DNN([data.shape[1]] + couches + [10])
             network_pretrain.pretrain_DNN(data, 10, 0.1, 64)
-            network_train = retropropagation(network_train, 20, 0.1, 64, data_trunc, data_label_bin_trunc)
-            network_pretrain = retropropagation(network_pretrain, 20, 0.1, 64, data_trunc, data_label_bin_trunc)
+            network_train = retropropagation(network_train, 100, 0.1, 64, data_trunc, data_label_bin_trunc)
+            network_pretrain = retropropagation(network_pretrain, 100, 0.1, 64, data_trunc, data_label_bin_trunc)
             train_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
             pretrain_err.append(test_DNN(network_pretrain, data_test, data_test_label_bin, data_test_label))
         plt.plot(n_donnees_list, train_err, label = 'Train')
@@ -95,12 +95,12 @@ if __name__ == '__main__':
         for n_couches in n_couches_list:
             print('#################################################')
             print("Nombre couches = {}".format(n_couches))
-            couches = [50 for i in range(n_couches)]
+            couches = [200 for i in range(n_couches)]
             network_pretrain = DNN([data.shape[1]] + couches + [10])
             network_train = DNN([data.shape[1]] + couches + [10])
             network_pretrain.pretrain_DNN(data, 10, 0.1, 64)
-            network_train = retropropagation(network_train, 20, 0.1, 64, data, data_label_bin)
-            network_pretrain = retropropagation(network_pretrain, 20, 0.1, 64, data, data_label_bin)
+            network_train = retropropagation(network_train, 100, 0.1, 64, data, data_label_bin)
+            network_pretrain = retropropagation(network_pretrain, 100, 0.1, 64, data, data_label_bin)
             train_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
             pretrain_err.append(test_DNN(network_pretrain, data_test, data_test_label_bin, data_test_label))
         plt.plot(n_couches_list, train_err, label = 'Train')
@@ -125,8 +125,8 @@ if __name__ == '__main__':
             network_pretrain = DNN([data.shape[1]] + couches + [10])
             network_train = DNN([data.shape[1]] + couches + [10])
             network_pretrain.pretrain_DNN(data, 10, 0.1, 64)
-            network_train = retropropagation(network_train, 20, 0.1, 64, data, data_label_bin)
-            network_pretrain = retropropagation(network_pretrain, 20, 0.1, 64, data, data_label_bin)
+            network_train = retropropagation(network_train, 100, 0.1, 64, data, data_label_bin)
+            network_pretrain = retropropagation(network_pretrain, 100, 0.1, 64, data, data_label_bin)
             train_err.append(test_DNN(network_train, data_test, data_test_label_bin, data_test_label))
             pretrain_err.append(test_DNN(network_pretrain, data_test, data_test_label_bin, data_test_label))
         plt.plot(taille_couches_list, train_err, label = 'Train')

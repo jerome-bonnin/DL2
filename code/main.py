@@ -135,64 +135,18 @@ if __name__ == '__main__':
         plt.show()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if args[0] == 'dnn_MNIST_pretrain':
+            n_epochs = int(args[1])
+            learning_rate = float(args[2])
+            batch_size = int(args[3])
+            couches = [int(s) for s in args[4].rsplit('-')]
+            data = training_images()
+            data_label, data_label_bin = training_labels()
+            data_test = testing_images()
+            data_test_label, data_test_label_bin= testing_labels()
+            data = binariser(data)
+            data_test = binariser(data_test)
+            dnn = DNN([data.shape[1]] + couches + [10])
+            dnn.pretrain_DNN(data, 10, learning_rate, batch_size)
+            dnn = retropropagation(dnn, n_epochs, learning_rate, batch_size, data, data_label_bin)
+            print("L'erreur est de : {}".format(test_DNN(dnn, data_test, data_test_label_bin, data_test_label)))
